@@ -1,0 +1,39 @@
+.bor{
+    height: 1px;
+    border: solid 1px #ccc;
+}
+.el-form .el-button--success{
+padding: 10px 10px;
+}
+
+.el-input{
+    width: 300px;
+}
+
+.el-button--default{
+    border: none;
+}
+.el-button--danger{
+    border: none;
+}
+
+/* 分页的样式开始 */
+#page{
+    margin-top: 30px;
+    margin-bottom: 30px;
+    margin-left: 20px;
+}
+
+.el-pagination{
+    display: inline-block;
+
+}
+
+#page a{
+text-decoration: none;
+color: #67c23a;
+font-size: 14px;
+margin-right: 20px;
+}
+
+

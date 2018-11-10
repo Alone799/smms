@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>超市管理系统——首页</title>
+    <!-- 引入重置样式 -->
+    <link rel="stylesheet" href="styles/reset.css">
+    <!-- 引入elementUI -->
+    <link rel="stylesheet" href="styles/elementUI.css">
+    <!-- 引入首页的样式 -->
+    <link rel="stylesheet" href="styles/index.css">
+</head>
+
+<body>
+    <div id="app">
+        <el-main>
+            <el-card class="box-card">
+                <div slot="header" class="clearfix">
+                    <span>系统信息</span>
+                </div>
+                <div class="text item">
+                    <!-- 消息框 -->
+                    <el-alert title="警告提示的文案" type="warning" show-icon>
+                    </el-alert>
+                    <el-alert id="importAlert" title="不可关闭的 alert" type="info" :closable="false" show-icon>
+                    </el-alert>
+                    <!-- 左右结构 -->
+                    <el-row :gutter="22">
+                        <el-col :span="12">
+                            <div class="grid-content bg-purple">
+                                <el-card class="box-card">
+                                    <div slot="header" class="clearfix">
+                                        <span>销售排行</span>
+                                    </div>
+                                    <div class="text item">
+                                        <template>
+                                            <el-table :data="tableData" stripe style="width: 100%">
+                                                <el-table-column prop="date" label="日期" width="180">
+                                                </el-table-column>
+                                                <el-table-column prop="name" label="姓名" width="180">
+                                                </el-table-column>
+                                                <el-table-column prop="address" label="地址">
+                                                </el-table-column>
+                                            </el-table>
+                                        </template>
+                                    </div>
+                                </el-card>
+                            </div>
+                        </el-col>
+                        <el-col :span="12">
+                            <div class="grid-content bg-purple-light">
+                                <el-card class="box-card">
+                                    <div slot="header" class="clearfix">
+                                        <span>缺货商品</span>
+                                    </div>
+                                    <div class="text item">
+                                        <template>
+                                            <el-table :data="tableData" stripe style="width: 100%">
+                                                <el-table-column prop="date" label="日期" width="180">
+                                                </el-table-column>
+                                                <el-table-column prop="name" label="姓名" width="180">
+                                                </el-table-column>
+                                                <el-table-column prop="address" label="地址">
+                                                </el-table-column>
+                                            </el-table>
+                                        </template>
+                                    </div>
+                                </el-card>
+                            </div>
+                        </el-col>
+                    </el-row>
+                </div>
+            </el-card>
+        </el-main>
+    </div>
+    <!-- 引入jquery -->
+    <script src="./javascripts/jquery.min.js"></script>
+    <!-- 使用cdn -->
+    <!-- <script src="https://cdn.bootcss.com/jquery/2.2.2/jquery.min.js"></script> -->
+    <!-- 引入vue -->
+    <script src="./javascripts/vue.min.js"></script>
+    <!-- 引入elementUI -->
+    <script src="./javascripts/elementUI.js"></script>
+    <script>
+        //创建vue实例
+        new Vue({
+            //挂载视图
+            el: "#app",
+            data() {
+                return {
+                    tableData: [{
+                        date: '2016-05-02',
+                        name: '王小虎'
+                    }, {
+                        date: '2016-05-04',
+                        name: '王小虎'
+                    }, {
+                        date: '2016-05-01',
+                        name: '王小虎'
+                    }, {
+                        date: '2016-05-03',
+                        name: '王小虎'
+                    }]
+                }
+            },
+            methods: {
+                
+            }
+        });
+    </script>
+</body>
+
+</html>

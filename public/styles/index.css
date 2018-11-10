@@ -1,0 +1,144 @@
+/* 页面在不同的分辨率下都要铺满 */
+html,body,#app,.el-container{
+    height: 100%;
+}
+
+.el-header, .el-footer {
+    color: #333;
+    line-height: 30px;
+  }
+
+  .el-header h2{
+      color: #000;
+      font-size: 30px;
+      font-weight: bold;
+      margin-top: 30px;
+  }
+  
+  /* 左侧栏的样式 */
+  .el-aside {
+    background: url(../images/left_bg.png) repeat-y;
+  }
+
+  .el-aside a {
+     color: #fff;
+     text-decoration: none;
+  }
+
+  /* 左侧顶部的菜单 */
+  #leftMenuTitle{
+      line-height: 30px;
+      text-align: right;
+      padding-right: 20px;
+      color: #fff;
+      font-size: 14px;
+  }
+
+  #leftMenuTitle h1{
+    font-size: 24px;
+    padding: 30px 0px;
+}
+
+  /* 左侧的导航菜单 */
+  .el-menu{
+      background-color: transparent;
+      border-right: none;
+  }
+
+  /* 菜单标题 */
+  .el-submenu__title{
+      color: #fff;
+      background: url(../images/menu_bg.png) repeat-x;
+      height: 33px;
+      line-height: 33px;
+      width: 210px;
+      border-radius: 3px 0px 0px 3px;
+      margin-left: 20px;
+      text-align: right;
+  }
+
+  .el-submenu{
+      margin-bottom: 10px;
+  }
+
+  /* 子菜单 */
+  .el-submenu .el-menu-item{
+     color: #fff;
+     height: 33px;
+     line-height: 33px;
+     width: 210px;
+     border-radius: 3px 0px 0px 3px;
+     margin-left: 20px;
+     text-align: right;
+     padding: 0 20px;
+  }
+
+  /* 子菜单选中的样式 */
+  .el-menu-item.is-active{
+      background: url(../images/menu_bgOver.png) repeat-x;
+      color: rgb(245, 122, 8);
+  }
+
+  .el-menu-item.is-active a{
+     color: rgb(245, 122, 8);
+  }
+
+  /* 鼠标悬停和焦点的样式 */
+  .el-menu-item:focus, .el-menu-item:hover{
+      background-color: rgba(255, 255, 255, 0.2);
+  }
+
+  /* 隐藏菜单箭头 */
+  .el-submenu__icon-arrow{
+      display: none;
+  }
+
+  /* 右侧的内容 */
+  .el-main {
+    color: #333;
+  }
+
+  .el-main .el-card__header{
+      height: 41px;
+      line-height: 41px;
+      padding: 0px 20px;
+
+      color: #000;
+      font-size: 18px;
+      font-weight: bold;
+
+      background: url(../images/cardTitleBg.png) repeat-x;
+  }
+
+  .el-main .el-card__body{
+      background-color: #fff;
+  }
+
+  #importAlert{
+      margin-top: 15px;
+      margin-bottom: 15px;
+  }
+  
+  body > .el-container {
+     background-color: #F8F8F8;
+  }
+
+  .el-footer{
+      font-size: 12px;
+  }
+
+  .el-footer p{
+      border-top: solid 1px #ccc;
+      line-height: 50px;
+  }
+
+
+  /* 账号注册页面 */
+  .el-input{
+      width: 50%;
+  }
+
+  /* 把下拉列表恢复为100% */
+  .el-input--suffix{
+      width: 100%;
+  }

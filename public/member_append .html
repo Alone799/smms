@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>超市管理系统——账号管理</title>
+    <!-- 引入重置样式 -->
+    <link rel="stylesheet" href="styles/reset.css">
+    <!-- 引入elementUI -->
+    <link rel="stylesheet" href="styles/elementUI.css">
+    <!-- 引入首页的样式 -->
+    <link rel="stylesheet" href="styles/index.css">
+    <link rel="stylesheet" href="./styles/append.css">
+</head>
+
+<body>
+    <div id="app">
+        <el-main>
+            <el-card class="box-card">
+                <div slot="header" class="clearfix">
+                    <span>账号管理</span>
+                </div>
+                <el-form  :label-position="labelPosition" :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm" :model="formLabelAlign">
+                    <!-- 多选框 -->
+                    <div id="fen">
+                        <el-form-item label="所属分类：" prop="region">
+                        <el-select v-model="ruleForm.region" placeholder="----选择分类----">
+                            <el-option label="区域一" value="shanghai"></el-option>
+                            <el-option label="区域二" value="beijing"></el-option>
+                        </el-select>
+                    </el-form-item>
+                    </div>
+                        
+                    <!--商品条形码  -->
+                   
+                        <el-form-item label="商品条形码：" prop="username" label-width="500px" >
+                            <el-input v-model="ruleForm.username" clearable></el-input>
+                            <div class="sheng">
+                                 <el-button type="success" plain>生成条形码</el-button>
+                            </div>
+                        </el-form-item> 
+                  
+                    <!-- 商品名称 -->
+                 
+                        <el-form-item label="商品名称：" prop="arrname">
+                        <el-input v-model="ruleForm.arrname" clearable></el-input>
+                    </el-form-item> 
+                   
+                    <!-- 商品售价 -->
+                    <el-form-item label="商品售价：" prop="name">
+                        <el-input v-model="ruleForm.name" clearable></el-input>
+                        <span>元</span>
+                    </el-form-item>
+
+                        <el-form-item label="市场价：">
+                            <el-input v-model="formLabelAlign.name" clearable></el-input>
+                            <span>元</span>
+                            <p>记重商品单位为千克</p>
+                        </el-form-item>
+
+                        <el-form-item label="商品进价：">
+                            <el-input v-model="formLabelAlign.region" clearable></el-input>
+                            <span>元</span>
+                        </el-form-item>
+
+                        <el-form-item label="入库数量：">
+                            <el-input v-model="formLabelAlign.type" clearable></el-input>
+                        </el-form-item>
+
+                        <el-form-item label="商品重量：">
+                                <el-input v-model="formLabelAlign.type1" clearable></el-input>
+                            </el-form-item>
+
+                            <el-form-item label="商品单位：">
+                                    <el-input v-model="formLabelAlign.type2" clearable></el-input>
+                                </el-form-item>
+                        <!-- 会员优惠单选框 -->
+                        <el-form-item label="会员优惠：" prop="resource">
+                            <el-radio-group v-model="ruleForm.resource">
+                                <el-radio label="享受"></el-radio>
+                                <el-radio label="不享受"></el-radio>
+                            </el-radio-group>
+                        </el-form-item>
+                         <!-- 是否促销单选框 -->
+                        <template>
+                            <p class="sales">是否促销：</p>
+                                <el-radio v-model="radio" label="1">启用</el-radio>
+                                <el-radio v-model="radio" label="2">禁用</el-radio>
+                              </template>
+                        <!-- 文本域 -->
+                        <el-form-item label="活动形式：" prop="desc">
+                            <el-input type="textarea" v-model="ruleForm.desc"></el-input>
+                             </el-form-item>
+                        <p class="han">不超过200个汉字</p>
+
+                        <el-form-item>
+                            <el-button type="primary" @click="submitForm('ruleForm')">添加</el-button>
+                            
+                        </el-form-item>
+                   
+                </el-form>
+        </el-main>
+    </div>
+    <!-- 引入jquery -->
+    <script src="./javascripts/jquery.min.js"></script>
+
+    <!-- 引入vue -->
+    <script src="./javascripts/vue.min.js"></script>
+    <!-- 引入elementUI -->
+    <script src="./javascripts/elementUI.js"></script>
+    <script>
+        //创建vue实例
+        new Vue({
+            //挂载视图
+            el: "#app",
+            data() {
+                return {
+                    
+                    radio: '1',
+                    labelPosition: 'top',
+                    ruleForm: {
+                        name: '',
+                        region: '',
+                        resource: '',
+                        desc: ''
+                    },
+                    formLabelAlign: {
+                        name: '',
+                        username:'',
+                        arrname:'',
+                        region: '',
+                        type: '',
+                        type1: '',
+                        type2: ''
+                    },
+                    rules: {
+                        name: [
+                            { required: true, message: '请输入活动名称', trigger: 'blur' },
+                            { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+                        ],
+                        username: [
+                            { required: true, message: '请输入活动名称', trigger: 'blur' },
+                            { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+                        ],
+                        arrname: [
+                            { required: true, message: '请输入活动名称', trigger: 'blur' },
+                            { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+                        ],
+                        region: [
+                            { required: true, message: '请选择活动区域', trigger: 'change' }
+                        ],
+                        resource: [
+                            { required: true, message: '请选择活动资源', trigger: 'change' }
+                        ],
+                        desc: [
+                            { required: true, message: '请填写活动形式', trigger: 'blur' }
+                        ]
+                    }
+                };
+            },
+            methods: {
+                submitForm(formName) {
+                    this.$refs[formName].validate((valid) => {
+                        if (valid) {
+                            alert('submit!');
+                        } else {
+                            console.log('error submit!!');
+                            return false;
+                        }
+                    });
+                },
+                resetForm(formName) {
+                    this.$refs[formName].resetFields();
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
