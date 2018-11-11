@@ -11,8 +11,9 @@
     <!-- 引入elementUI -->
     <link rel="stylesheet" href="styles/elementUI.css">
     <!-- 引入首页的样式 -->
-    <link rel="stylesheet" href="./styles/index.css">
-   <link rel="stylesheet" href="./styles/classify.css">
+    <link rel="stylesheet" href="styles/index.css">
+    <!-- 使用script标签发起同步请求 -->
+    <script src="/users/checkState"></script>
 </head>
 
 <body>
@@ -25,22 +26,25 @@
                 <div class="text item">
                     <!-- 账号管理 -->
                     <template>
-                        <el-table ref="multipleTable" :data="tableData3" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
-                            <el-table-column type="selection" width="55">
+                        <el-table :data="tableData" style="width: 100%">
+                            <el-table-column label="编号" prop="cg_id">
                             </el-table-column>
-
-                            <el-table-column prop="name" label="分类名称" width="120">
+                            <el-table-column label="名称" prop="cg_name">
                             </el-table-column>
-                           
-
+                            <el-table-column label="父级分类">
+                                <template slot-scope="scope">
+                                    <span> {{ scope.row.cg_fatherID }}</span>
+                                </template>
+                            </el-table-column>
                             <el-table-column label="操作">
                                 <template slot-scope="scope">
-                                    <el-button @click="handleEdit(scope.$index, scope.row)"type="primary" icon="el-icon-edit" circle>编辑</el-button>
-
+                                    <el-button size="mini" @click="handleEdit(scope.row.cg_id)" type="primary" plain>
+                                        <i class="el-icon-edit"></i> 编辑</el-button>
+                                    <el-button size="mini" @click="handleDelete(scope.row.cg_id)" type="danger" plain>
+                                        <i class="el-icon-delete"></i> 删除</el-button>
                                 </template>
                             </el-table-column>
                         </el-table>
-
                     </template>
                 </div>
             </el-card>
@@ -48,9 +52,12 @@
     </div>
     <!-- 引入jquery -->
     <script src="./javascripts/jquery.min.js"></script>
-
+    <!-- 使用cdn -->
+    <!-- <script src="https://cdn.bootcss.com/jquery/2.2.2/jquery.min.js"></script> -->
     <!-- 引入vue -->
     <script src="./javascripts/vue.min.js"></script>
+    <!-- 引入moment时间格式化的js库 -->
+    <script src="./javascripts/moment-with-locales.min.js"></script>
     <!-- 引入elementUI -->
     <script src="./javascripts/elementUI.js"></script>
     <script>
@@ -60,44 +67,27 @@
             el: "#app",
             data() {
                 return {
-                    tableData3: [{
-                       name: '日用品',   
-                    }, {
-                        name: '舒肤佳',                         
-                    }, {
-                        name: '海飞丝',                    
-                    }, {
-                        name: '食品',                      
-                    }, {
-                        name: '优乐美',                       
-                    }, {
-                        name: '烟酒',                       
-                    }, {
-                        name: '龙凤呈祥',                        
-                    },
-                    {
-                        name: '茅台',                        
-                    }
-                ],
-                    multipleSelection: []
-                }
+                    tableData: []
+                };
             },
             methods: {
-                toggleSelection(rows) {
-                    if (rows) {
-                        rows.forEach(row => {
-                            this.$refs.multipleTable.toggleRowSelection(row);
-                        });
-                    } else {
-                        this.$refs.multipleTable.clearSelection();
-                    }
+                //编辑和删除的方法
+                handleEdit(id) {
+                    console.log("编辑的id", id);
                 },
-                handleSelectionChange(val) {
-                    this.multipleSelection = val;
+                handleDelete(id) {
+                    console.log("删除的id", id);
                 },
-                handleEdit(index, row) {
-                    console.log(index, row);
-                },
+                //抽取获取数据的ajax请求为一个公共的方法
+                getDataAjax() {
+                    $.get("/category/list", (datalist) => {
+                        this.tableData = datalist;
+                    });
+                }
+            },
+            mounted() {
+                //调用ajax方法获取数据
+                this.getDataAjax();
             }
         });
     </script>

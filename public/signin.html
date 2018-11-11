@@ -83,15 +83,22 @@
                 submitForm(formName) {
                     //找到表单对象调用validate()验证方法
                     //validate()验证方法回调函数的valid参数表示验证的结果
-                    
+
                     this.$refs[formName].validate((valid) => {
                         if (valid) {
-                            alert('提交成功'); //验证通过
-                            //一般前端验证通过就会发起ajax请求到后端路由做数据库验证
-                            console.log("取值：用户名和密码", this.ruleForm2.username, this.ruleForm2.checkPass);
-                        } else {
-                            console.log('error submit!!'); //验证失败
-                            return false; //阻止表单提交
+                            //发送ajax请求到后端做验证
+                            $.post("/users/loginCheck", this.ruleForm2, function (result) {
+                                //前端根据返回的数据处理业务逻辑
+                                //console.log(result);
+                                if (result.isOk) {
+                                    alert(result.msg);
+                                    location.href = "index.html";
+                                } else {
+                                    alert(result.msg);
+                                }
+                            });
+                        }else{
+                            return false;//阻止表单的提交
                         }
                     });
                 },

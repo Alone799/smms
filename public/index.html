@@ -12,6 +12,9 @@
     <link rel="stylesheet" href="styles/elementUI.css">
     <!-- 引入首页的样式 -->
     <link rel="stylesheet" href="styles/index.css">
+
+    <!-- 使用script标签发起同步请求 -->
+    <script src="/users/checkState"></script>
 </head>
 
 <body>
@@ -23,7 +26,7 @@
                 <div id="leftMenuTitle">
                     <h1>华联超市管理系统</h1>
                     <p><span class="hello">你好,</span> admin</p>
-                    <p><a href="main.html" target="mainContent">管理首页</a> | <a href="signout.html">退出系统</a></p>
+                    <p><a href="main.html" target="mainContent">管理首页</a> | <a href="/users/signOut">退出系统</a></p>
                 </div>
                 <!-- 导航菜单 -->
                 <el-menu unique-opened="true" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose">

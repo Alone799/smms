@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="styles/elementUI.css">
     <!-- 引入首页的样式 -->
     <link rel="stylesheet" href="styles/index.css">
+    <!-- 使用script标签发起同步请求 -->
+    <script src="/users/checkState"></script>
 </head>
 
 <body>
@@ -24,7 +26,7 @@
                 <div class="text item">
                     <!-- 账号管理 -->
                     <template>
-                        <el-table :data="tableData"  style="width: 100%">
+                        <el-table :data="tableData" style="width: 100%">
                             <el-table-column label="编号">
                                 <template slot-scope="scope">
                                     <span>{{ scope.row.u_id }}</span>
@@ -78,34 +80,39 @@
                 handleEdit(id) {
                     console.log("编辑的id", id);
                     //1）点击修改按钮时把id传递给修改页面member_edit.html
-                    location.href="member_edit.html?id="+id;
+                    location.href = "member_edit.html?id=" + id;
                 },
                 handleDelete(id) {
+                    
+                    //confirm() 返回 true。如果点击取消按钮，则 confirm() 返回 false。
+                    if (confirm("确认删除吗？")) {
                     //1. 获取删除的id，参数传入
                     console.log("删除的id", id);
 
                     //2. 发起ajax到后端路由执行删除
-                    $.get("/users/del/",{id},(result)=> {
+                    $.get("/users/del/", { id }, (result) => {
                         //4. 根据删除的结果处理业务逻辑
                         console.log(result);
-                        if(result.isOk){
-                            //alert(result.msg);
+                        if (result.isOk) {
+                            
                             //删除成功后跳转到自己
                             //location.href="member_list.html";
-                            //location.reload(); //重载
+                            
 
                             //删除成功后再重新获取数据并更新tableData
                             //调用ajax方法获取数据
                             this.getDataAjax();
                         }
-                        else{
+                        else {
                             alert(result.msg);
                         }
+                        
                     });
+                }
                 },
                 //抽取获取数据的ajax请求为一个公共的方法
-                getDataAjax(){
-                    $.get("/users/list", (userlist)=> {
+                getDataAjax() {
+                    $.get("/users/list", (userlist) => {
                         this.tableData = userlist;
                     });
                 },
@@ -126,7 +133,7 @@
                 //修改this的指向，把this缓存起来指向vue实例
                 //let _this = this;
 
-               
+
 
                 //调用ajax方法获取数据
                 this.getDataAjax();

@@ -12,6 +12,10 @@
     <link rel="stylesheet" href="styles/elementUI.css">
     <!-- 引入首页的样式 -->
     <link rel="stylesheet" href="styles/index.css">
+
+
+    <!-- 使用script标签发起同步请求 -->
+    <script src="/users/checkState"></script>
 </head>
 
 <body>
@@ -108,14 +112,14 @@
                     this.$refs[formName].validate((valid) => {
                         if (valid) {
                             //2）从新获取新的数据并发起ajax到后端的保存路由
-                            $.post("/users/save",this.ruleForm2,function (result) {
+                            $.post("/users/save", this.ruleForm2, function (result) {
                                 //5. 前端根据返回的结果处理业务逻辑
                                 //{"isOk":true,"msg":"账号修改成功!"}
-                                if(result.isOk){
+                                if (result.isOk) {
                                     alert(result.msg);
-                                    location.href="member_list.html";
+                                    location.href = "member_list.html";
                                 }
-                                else{
+                                else {
                                     alert(result.msg);
                                     return false;
                                 }
@@ -128,29 +132,29 @@
                 }
             },
             //视图挂载完毕的钩子函数
-            mounted(){
+            mounted() {
                 //在修改页面中获取修改的id
                 //地址： member_edit.html?id=100
-                let reqUrl=location.href;
-                let id=reqUrl.split("=")[1];
+                let reqUrl = location.href;
+                let id = reqUrl.split("=")[1];
                 //console.log("修改用户的id",id);
 
                 //发起ajax请求去获取旧的用户数据
-                $.get("/users/getUserByID",{id},(userData)=>{
+                $.get("/users/getUserByID", { id }, (userData) => {
                     //旧的数据获取到后更新页面的dom（修改数据属性vue会自动帮我们实现） 
                     console.log(userData);
                     //由于使用的是vue的双向数据绑定，修改模型中的数据属性，视图会发生改变
-                    let data=userData[0];
+                    let data = userData[0];
                     //{u_id: 47, userName: "gay可亮1", userPwd: "e10adc3949ba59abbe56e057f20f883e", userGroup: "超级管理员"}
-                    this.ruleForm2.username=data.userName;
-                    this.ruleForm2.pass=data.userPwd;
-                    this.ruleForm2.checkPass=data.userPwd
-                    this.ruleForm2.oldPwd=data.userPwd; //暂存的旧密码
-                    this.ruleForm2.region=data.userGroup;
-                    this.ruleForm2.u_id=data.u_id; //把要修改的id也改到模型中
+                    this.ruleForm2.username = data.userName;
+                    this.ruleForm2.pass = data.userPwd;
+                    this.ruleForm2.checkPass = data.userPwd
+                    this.ruleForm2.oldPwd = data.userPwd; //暂存的旧密码
+                    this.ruleForm2.region = data.userGroup;
+                    this.ruleForm2.u_id = data.u_id; //把要修改的id也改到模型中
                 });
 
-                
+
             }
         });
     </script>

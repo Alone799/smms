@@ -5,15 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>超市管理系统——账号添加</title>
+    <title>超市管理系统——商品分类添加</title>
     <!-- 引入重置样式 -->
     <link rel="stylesheet" href="styles/reset.css">
     <!-- 引入elementUI -->
     <link rel="stylesheet" href="styles/elementUI.css">
     <!-- 引入首页的样式 -->
     <link rel="stylesheet" href="styles/index.css">
-    <link rel="stylesheet" href="./styles/arr.css">
-
+    <!-- 使用script标签发起同步请求 -->
+    <script src="/users/checkState"></script>
 </head>
 
 <body>
@@ -21,33 +21,29 @@
         <el-main>
             <el-card class="box-card">
                 <div slot="header" class="clearfix">
-                    <span>修改账号密码</span>
+                    <span>添加商品分类</span>
                 </div>
                 <div class="text item">
-                    <!-- 账号添加的页面 -->
+                    <!-- 商品分类的页面 -->
                     <el-form :label-position="labelPosition" :model="ruleForm2" status-icon :rules="rules2" ref="ruleForm2" label-width="100px"
                         class="demo-ruleForm">
-                        <el-form-item label="所属分类:" prop="region">
-                            <el-select v-model="ruleForm2.region" placeholder="----顶级分类----">
-                                <el-option label="超级管理员" value="超级管理员"></el-option>
-                                <el-option label="管理员" value="管理员"></el-option>
-                                <el-option label="普通用户" value="普通用户"></el-option>
+                        <el-form-item label="所属分类" prop="cg_fatherID">
+                            <el-select v-model="ruleForm2.cg_fatherID" placeholder="请选择父级分类">
+                                <el-option label="顶级分类" value="0">---顶级分类---</el-option>
+                                <el-option v-for="(c, index) in categoryList" :key="index" :label="c.cg_name" :value="c.cg_id"></el-option>
                             </el-select>
                         </el-form-item>
-                        <el-form-item label="新密码:" prop="checkPass">
-                            <el-input type="password" v-model="ruleForm2.checkPass" autocomplete="off"></el-input>
+                        <el-form-item label="分类名称" prop="cg_name">
+                            <el-input v-model="ruleForm2.cg_name"></el-input>
                         </el-form-item>
-                        
-                        <template>
-                            <p class="state">状态：</p>
-                            <el-radio v-model="radio" label="1">启动</el-radio>
-                            <el-radio v-model="radio" label="2">禁用</el-radio>
-                          </template>
-                          
-                           
-
+                        <el-form-item label="可用状态" prop="cg_isLocked">
+                            <el-radio-group v-model="ruleForm2.cg_isLocked">
+                              <el-radio value="1" label="1">启用</el-radio>
+                              <el-radio value="0" label="0">禁用</el-radio>
+                            </el-radio-group>
+                          </el-form-item>
                         <el-form-item>
-                            <el-button type="success" @click="submitForm('ruleForm2')">修改</el-button>
+                            <el-button type="success" @click="submitForm('ruleForm2')">添加分类</el-button>
                             <el-button @click="resetForm('ruleForm2')">重置</el-button>
                         </el-form-item>
                     </el-form>
@@ -57,6 +53,8 @@
     </div>
     <!-- 引入jquery -->
     <script src="./javascripts/jquery.min.js"></script>
+    <!-- 使用cdn -->
+    <!-- <script src="https://cdn.bootcss.com/jquery/2.2.2/jquery.min.js"></script> -->
     <!-- 引入vue -->
     <script src="./javascripts/vue.min.js"></script>
     <!-- 引入elementUI -->
@@ -67,51 +65,51 @@
             //挂载视图
             el: "#app",
             data() {
-                //自定义验证方法，判断密码和确认密码是否相等
-                var validatePass2 = (rule, value, callback) => {
-                    //如果密码和确认密码不相同，就抛出错误
-                    if (value !== this.ruleForm2.pass) {
-                        callback(new Error('两次输入密码不一致!'));
-                    } else {
-                        callback();
-                    }
-                };
                 return {
                     labelPosition: 'top',
-                    radio: '1',
                     ruleForm2: {
-                        pass: '',      //密码
-                        checkPass: '', //确认密码
-                        pwd: '',
-                        region: '', //用户组
-                       
+                        cg_fatherID: '',
+                        cg_name: '',
+                        cg_isLocked: "1"
                     },
+                    categoryList:[], //下拉列表的数据源
                     rules2: {
-                        
-                        checkPass: [
-                            { required: true, message: "请再次输入密码", trigger: 'blur' },
-                            { min: 6, max: 12, message: "确认密码长度必须在6~12位之间", trigger: "blur" },
-                            { validator: validatePass2, trigger: 'blur' }
-                        ], 
-                        region: [
-                            { required: true, message: '请选择用户组', trigger: 'change' }
-                        ] 
+                        cg_fatherID: [
+                            { required: true, message: "请选择分类", trigger: 'change' }
+                        ],
+                        cg_name: [
+                            { required: true, message: "分类名称必须填写", trigger: 'blur' }
+                        ]
                     }
                 };
+            },
+            mounted() {
+                $.get("/category/list",(dataList)=> {
+                    //把ajax请求获取的分类修改到模型上面
+                    this.categoryList=dataList;
+                });
             },
             methods: {
                 //提交表单
                 submitForm(formName) {
                     this.$refs[formName].validate((valid) => {
                         if (valid) {
-                            // alert('submit!');
-                            //1. 表单验证通过就发起ajax请求到后端路由
-                            //获取表单数据
-                            console.log("前端的数据对象:",this.ruleForm2);
-                            //语法： $.post(url,dataObj,success(data),"json")
-                            $.post("/users/add",this.ruleForm2,function (result) {
-                                //5. 前端根据返回的结果处理业务逻辑
-                                console.log(result);
+                            //表单验证通过
+                            //console.log(this.ruleForm2);
+                            $.post("/category/add",this.ruleForm2,function (result) {
+                               //处理业务逻辑 
+                               console.log(result);
+                               if(result.isOk){
+                                   if(confirm("继续添加吗?")){
+                                       location.reload();
+                                   }
+                                   else{
+                                       location.href="member_classify.html";
+                                   }
+                               }
+                               else{
+                                   alert(result.msg);
+                               }
                             });
                         } else {
                             console.log('error submit!!');

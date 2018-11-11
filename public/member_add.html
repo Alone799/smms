@@ -12,6 +12,9 @@
     <link rel="stylesheet" href="styles/elementUI.css">
     <!-- 引入首页的样式 -->
     <link rel="stylesheet" href="styles/index.css">
+
+    <!-- 使用script标签发起同步请求 -->
+    <script src="/users/checkState"></script>
 </head>
 
 <body>
@@ -110,16 +113,16 @@
                             //获取表单数据
                             //console.log("前端的数据对象:",this.ruleForm2);
                             //语法： $.post(url网址,dataObj数据对象,success(data)成功回调,"json数据格式")
-                            $.post("/users/add",this.ruleForm2,function (result) {
+                            $.post("/users/add", this.ruleForm2, function (result) {
                                 //前端根据返回的结果处理业务逻辑
-                                if(result.isOk){
+                                if (result.isOk) {
                                     alert(result.msg);
-                                    location.href="member_list.html";
-                                }else{
+                                    location.href = "member_list.html";
+                                } else {
                                     alert(result.msg);
                                     return false;
                                 }
-                                
+
                             });
                         } else {
                             console.log('error submit!!');
