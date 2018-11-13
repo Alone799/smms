@@ -33,7 +33,7 @@
                             </el-table-column>
                             <el-table-column label="父级分类">
                                 <template slot-scope="scope">
-                                    <span> {{ scope.row.cg_fatherID }}</span>
+                                    <span> {{ scope.row.father_name }}</span>
                                 </template>
                             </el-table-column>
                             <el-table-column label="操作">
@@ -76,11 +76,39 @@
                     console.log("编辑的id", id);
                 },
                 handleDelete(id) {
+                    if (confirm("确认删除吗？")) {
+                    //获取删除的id，参数传入
                     console.log("删除的id", id);
+
+                    //发起ajax到后端路由执行删除
+                    $.get("/category/del/", { id }, (result) => {
+                        //根据删除的结果处理业务逻辑
+                        console.log(result);
+                        if (result.isOk) {
+                            
+                            //删除成功后跳转到自己
+                            //location.href="member_list.html";
+                            
+
+                            //删除成功后再重新获取数据并更新tableData
+                            //调用ajax方法获取数据
+                            this.getDataAjax();
+                        }
+                        else {
+                            alert(result.msg);
+                        }
+                        
+                    });
+                }
                 },
                 //抽取获取数据的ajax请求为一个公共的方法
                 getDataAjax() {
                     $.get("/category/list", (datalist) => {
+                        datalist.forEach((v) => {
+                            if(v.father_name==null){
+                                v.father_name="顶级分类";
+                            }
+                        });
                         this.tableData = datalist;
                     });
                 }

@@ -5,16 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>超市管理系统——管理商品</title>
+    <title>超市管理系统——账号管理</title>
     <!-- 引入重置样式 -->
     <link rel="stylesheet" href="styles/reset.css">
     <!-- 引入elementUI -->
     <link rel="stylesheet" href="styles/elementUI.css">
     <!-- 引入首页的样式 -->
     <link rel="stylesheet" href="styles/index.css">
-
-    <!-- 引入商品统计的样式 -->
-    <link rel="stylesheet" href="styles/com_statement.css">
     <!-- 使用script标签发起同步请求 -->
     <script src="/users/checkState"></script>
 </head>
@@ -24,43 +21,78 @@
         <el-main>
             <el-card class="box-card">
                 <div slot="header" class="clearfix">
-                    <span>商品价格统计</span>
+                    <span>商品信息管理</span>
                 </div>
+                <div class="text item">
+                    <el-form :inline="true" :model="search" id="searchForm" class="demo-form-inline">
+                        <el-form-item label="所属分类">
+                            <el-select v-model="search.category" placeholder="请选择">
+                                <el-option v-for="(c, index) in categoryList" :key="index" :label="c.cg_name" :value="c.cg_id"></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="关键词">
+                            <el-input v-model="search.keywords" placeholder="条码或者商品名称"></el-input>
+                        </el-form-item>
 
+                        <el-form-item>
+                            <el-button type="success" @click="onSearch">查询</el-button>
+                        </el-form-item>
+                    </el-form>
+                </div>
                 <div class="text item">
                     <template>
-                        <div class="block">
-                            <span class="demonstration">时间:</span>
-                            <el-date-picker v-model="value2" align="right" type="date" placeholder="2010-02-01" :picker-options="pickerOptions1">
-                            </el-date-picker>
-                            --
-                            <el-date-picker v-model="value2" align="right" type="date" placeholder="2010-02-07" :picker-options="pickerOptions1">
-                            </el-date-picker>
-
-                            <el-form :inline="true" :model="formInline" class="demo-form-inline">
-                                <el-form-item>
-                                    <el-select v-model="formInline.region" placeholder="- - - - - 选择分类 - - - - -">
-                                        <el-option label="区域一" value="shanghai"></el-option>
-                                        <el-option label="区域二" value="beijing"></el-option>
-                                    </el-select>
-                                </el-form-item>
-                            </el-form>
-                            <!-- 按钮 -->
-                            <el-button type="success">提交</el-button>
-                        </div>
+                        <el-table :data="tableData" style="width: 100%">
+                            <el-table-column label="编号" prop="good_id" width="50px">
+                            </el-table-column>
+                            <el-table-column label="商品名称" prop="goodsname">
+                            </el-table-column>
+                            <el-table-column label="所属分类" width="100px">
+                                <template slot-scope="scope">
+                                    <span> {{ scope.row.cg_name }}</span>
+                                </template>
+                            </el-table-column>
+                            <el-table-column class-name="redText" label="商品进价" width="80px">
+                                <template slot-scope="scope">
+                                    <span> {{ scope.row.goodsprice | formatPrice }}</span>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="市场价" width="80px">
+                                <template slot-scope="scope">
+                                    <span> {{ scope.row.marketprice | formatPrice }}</span>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="销售价" width="80px">
+                                <template slot-scope="scope">
+                                    <span class="redText"> {{ scope.row.saleprice | formatPrice }}</span>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="操作" width="200px">
+                                <template slot-scope="scope">
+                                    <el-button size="mini" @click="handleEdit(scope.row.cg_id)" type="primary" plain>
+                                        <i class="el-icon-edit"></i> 编辑</el-button>
+                                    <el-button size="mini" @click="handleDelete(scope.row.cg_id)" type="danger" plain>
+                                        <i class="el-icon-delete"></i> 删除</el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
                     </template>
-
                 </div>
-
+                <div class="text item">
+                    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" background :current-page="currentPage"
+                        :page-sizes="[1, 2, 3, 4, 5, 10, 100, 200, 300, 400]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper"
+                        :total="total">
+                    </el-pagination>
+                </div>
             </el-card>
         </el-main>
     </div>
     <!-- 引入jquery -->
     <script src="./javascripts/jquery.min.js"></script>
-    <!-- 使用cdn -->
-    <!-- <script src="https://cdn.bootcss.com/jquery/2.2.2/jquery.min.js"></script> -->
+
     <!-- 引入vue -->
     <script src="./javascripts/vue.min.js"></script>
+    <!-- 引入moment时间格式化的js库 -->
+    <script src="./javascripts/moment-with-locales.min.js"></script>
     <!-- 引入elementUI -->
     <script src="./javascripts/elementUI.js"></script>
     <script>
@@ -69,44 +101,105 @@
             //挂载视图
             el: "#app",
             data() {
-
                 return {
-                    formInline: {
-                        user: '',
-                        region: ''
-                    },
-                    pickerOptions1: {
-                        disabledDate(time) {
-                            return time.getTime() > Date.now();
-                        },
-                        shortcuts: [{
-                            text: '今天',
-                            onClick(picker) {
-                                picker.$emit('pick', new Date());
-                            }
-                        }, {
-                            text: '昨天',
-                            onClick(picker) {
-                                const date = new Date();
-                                date.setTime(date.getTime() - 3600 * 1000 * 24);
-                                picker.$emit('pick', date);
-                            }
-                        }, {
-                            text: '一周前',
-                            onClick(picker) {
-                                const date = new Date();
-                                date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
-                                picker.$emit('pick', date);
-                            }
-                        }]
-                    }, methods: {
-                        onSubmit() {
-                            console.log('submit!');
-                        }
-                    },
-                    value1: '',
-                    value2: '',
+                    tableData: [],
+                    categoryList: [],
+                    total: 52,
+                    currentPage: 1,
+                    pageSize: 10,
+                    search: {
+                        keywords: '',
+                        category: ''
+                    }
                 };
+            },
+            filters: {
+                //过滤器做一个管道格式化价格
+                formatPrice(price) {
+                    return price.toFixed(2);
+                }
+            },
+            methods: {
+                //执行查询的方法
+                onSearch(){
+                    
+                    
+                    
+                    //查询+分页
+                    this.getDataAjax();
+                },
+                //编辑和删除的方法
+                handleEdit(id) {
+                    console.log("编辑的id", id);
+                },
+                handleDelete(id) {
+                    console.log("删除的id", id);
+                    if (confirm("确认删除吗？")) {
+                    //获取删除的id，参数传入
+                    console.log("删除的id", id);
+
+                    //发起ajax到后端路由执行删除
+                    $.get("/goods/del/", { id }, (result) => {
+                        //根据删除的结果处理业务逻辑
+                        console.log(result);
+                        if (result.isOk) {
+                            
+
+                            this.getDataAjax();
+                        }
+                        else {
+                            alert(result.msg);
+                        }
+                        
+                    });
+                }
+                },
+                //抽取获取数据的ajax请求为一个公共的方法
+                getDataAjax() {
+                    //把页码和每页大小传入后端路由
+                   
+
+                    //查询+分页
+                    let pageSearchObj = {
+                        currentPage: this.currentPage,  //当前页
+                        pageSize: this.pageSize,        //每页大小
+                        keywords: this.search.keywords, //关键词
+                        category: this.search.category  //分类
+                    }
+
+                    $.get("/goods/listPagerSearch", pageSearchObj, (pagerData) => {
+                        
+                        this.total = pagerData.total; //符合条件的总记录数
+                        this.tableData = pagerData.datalist; //符合条件的分页数据
+                    });
+                },
+                //每页大小分页的方法
+                handleSizeChange(val) {
+                    //console.log(`每页 ${val} 条`);
+
+                    this.pageSize = val; //修改每页大小
+                    //修改每页大小后要重新调用ajax，显示新的页码的数据
+                    this.getDataAjax();
+                },
+                //当前页码改变的方法
+                handleCurrentChange(val) {
+                    //console.log(`当前页: ${val}`);
+                    this.currentPage = val;//改变页码
+
+                    //改变页码后要重新调用ajax，显示新的页码的数据
+                    this.getDataAjax();
+                }
+            },
+            mounted() {
+                //调用ajax方法获取数据+发起ajax到后端路由获取分页的数据
+                this.getDataAjax();
+
+                //填充分类
+                $.get("/category/list",(dataList)=> {
+                    //把ajax请求获取的分类修改到模型上面
+                    //console.log(dataList);
+                    this.categoryList=dataList;
+                });
             }
         });
     </script>

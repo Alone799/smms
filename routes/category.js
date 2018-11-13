@@ -16,7 +16,7 @@ router.post('/add', function(req, res, next) {
   //执行sql语句
   connection.query(sqlStr,sqlParams, function (error, results) {
     if (error) throw error; //出错对象
-    //4. 返回处理的结果到前端
+    //返回处理的结果到前端
     //根据执行sql语句的结果返回json给前端
     //"affectedRows":1, 返回受影响的行数，如果大于0就表示成功
     if(results.affectedRows>0){
@@ -31,7 +31,7 @@ router.post('/add', function(req, res, next) {
 // 获取商品分类列表的路由
 router.get("/list",(req,res)=>{
    //构造sql
-   let sqlStr="select * from categoryGoods order by cg_id DESC";
+   let sqlStr="select t1.*,t2.cg_name as father_name from categorygoods as t1 left join categorygoods as t2 on t1.cg_fatherID=t2.cg_id";
 
    //执行sql
    connection.query(sqlStr,(err,categoryList)=>{
@@ -40,14 +40,29 @@ router.get("/list",(req,res)=>{
    });
 });
 
-// 删除商品分类的路由
+
+// 删除用户的路由
 router.get("/del",(req,res)=>{
-   res.send("删除分类");
+  //后端路由接收删除的id 返回结果到前端
+  let id=req.query.id;
+
+  //构造sql语句
+  let sqlStr="delete from categorygoods where cg_id=?";
+  let sqlParams=[id];
+
+  //执行删除sql
+  connection.query(sqlStr,sqlParams,(error,result)=>{
+    if(error) throw error;
+    //"affectedRows":1, 返回受影响的行数，如果大于0就表示成功
+    if(result.affectedRows>0){
+      res.send({"isOk":true,"msg":"账号删除成功!"});
+      
+    }
+    else{
+      res.send({"isOk":false,"msg":"账号删除失败!"});
+    }
+  });
 });
 
-//3）接收新的数据并把新的数据update到数据库中
-router.post('/save', function(req, res, next) {
-   res.send("保存分类");
-});
 
 module.exports = router;

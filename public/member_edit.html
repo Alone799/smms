@@ -111,9 +111,9 @@
                 submitForm(formName) {
                     this.$refs[formName].validate((valid) => {
                         if (valid) {
-                            //2）从新获取新的数据并发起ajax到后端的保存路由
+                            //从新获取新的数据并发起ajax到后端的保存路由
                             $.post("/users/save", this.ruleForm2, function (result) {
-                                //5. 前端根据返回的结果处理业务逻辑
+                                //前端根据返回的结果处理业务逻辑
                                 //{"isOk":true,"msg":"账号修改成功!"}
                                 if (result.isOk) {
                                     alert(result.msg);
@@ -145,7 +145,7 @@
                     console.log(userData);
                     //由于使用的是vue的双向数据绑定，修改模型中的数据属性，视图会发生改变
                     let data = userData[0];
-                    //{u_id: 47, userName: "gay可亮1", userPwd: "e10adc3949ba59abbe56e057f20f883e", userGroup: "超级管理员"}
+                    
                     this.ruleForm2.username = data.userName;
                     this.ruleForm2.pass = data.userPwd;
                     this.ruleForm2.checkPass = data.userPwd
