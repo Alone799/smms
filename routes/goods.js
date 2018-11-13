@@ -90,7 +90,7 @@ router.get("/listPagerSearch",(req,res)=>{
   });
 });
 
-// 删除用户的路由
+// 删除商品的路由
 router.get("/del",(req,res)=>{
   //后端路由接收删除的id 返回结果到前端
   let id=req.query.id;
@@ -104,11 +104,11 @@ router.get("/del",(req,res)=>{
     if(error) throw error;
     //"affectedRows":1, 返回受影响的行数，如果大于0就表示成功
     if(result.affectedRows>0){
-      res.send({"isOk":true,"msg":"账号删除成功!"});
+      res.send({"isOk":true,"msg":"商品删除成功!"});
       
     }
     else{
-      res.send({"isOk":false,"msg":"账号删除失败!"});
+      res.send({"isOk":false,"msg":"商品删除失败!"});
     }
   });
 });
